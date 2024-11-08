@@ -49,9 +49,7 @@ public class Examen1P1_JoanaHernandez {
         scanner.close();
     }
 
-    /**
-     *
-     */
+   
     public static void descifrarCombinacion() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Seleccione la dificultad:");
@@ -138,16 +136,29 @@ public class Examen1P1_JoanaHernandez {
     }
 
     public static int[] rotarArreglo(int[] arreglo, char direccion, int posiciones) {
-        int tamano = arreglo.length;
-        int[] resultado = new int[tamano];
-        for (int i = 0; i < tamano; i++) {
-            int nuevaPosicion = (direccion == 'i') 
-                ? (i - posiciones + tamano) % tamano 
-                : (i + posiciones) % tamano;
-            resultado[nuevaPosicion] = arreglo[i];
-        }
-        return resultado;
+    int tamano = arreglo.length;
+    posiciones = posiciones % tamano; // Ajuste para evitar rotaciones innecesarias
+    
+    // Convertir rotación izquierda a rotación derecha equivalente
+    if (direccion == 'i') {
+        posiciones = tamano - posiciones;
     }
+
+    int[] resultado = new int[tamano];
+    
+    // Copiar los últimos 'posiciones' elementos al comienzo de 'resultado'
+    for (int i = 0; i < posiciones; i++) {
+        resultado[i] = arreglo[tamano - posiciones + i];
+    }
+    
+    // Copiar el resto de los elementos
+    for (int i = posiciones; i < tamano; i++) {
+        resultado[i] = arreglo[i - posiciones];
+    }
+
+    return resultado;
+}
+
 
     public static void mostrarArreglo(int[] arreglo) {
         for (int valor : arreglo) {
