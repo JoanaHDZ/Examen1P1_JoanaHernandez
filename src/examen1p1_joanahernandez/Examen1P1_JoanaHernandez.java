@@ -27,125 +27,174 @@ public class Examen1P1_JoanaHernandez {
             System.out.println("Que quiere hacer?");
             opcion = sc.nextInt();
             
-            switch (opcion) {
+            switch(opcion) {
                 case 1:
-                  descifrar();
-                  break;
-                case 2:
-                 rotacionCircular();
-                default:
+                   // descifrarCombinacion();
                     break;
+                case 2:
+                    rotacionCircular();
+                    break;
+                case 3:
+                    bono();
+                    break;
+                case 4:
+                    System.out.println("Saliendo...");
+                    break;
+                default:
+                    System.out.println("Opcion  inválida.");
             }
         } while (opcion != 4);
-        if (opcion == 4) {
-            System.out.println("Gracias por participar");
-        }
+        
     } // fin main
     
-    public static void descifrar() {
+    public static void descifrarCombinacion() {
         Scanner sc = new Scanner(System.in);
-        Random ran = new Random();
-        System.out.println("Seleccione la dificultad");
-        System.out.println("1. Facil");
-        System.out.println("2. medio");
-        System.out.println("3. dificil");
-        int d = sc.nextInt();
-        boolean vdd = true;
-        String arreglo = "";
-        
-        int intentos;
-        
-        switch (d) {
-            case 1:
-               intentos = 22;
-                crearcombinacion();
-                break;
-            case 2:
-                intentos = 20;
-                crearcombinacion();
-                break;
-            default:
-                intentos = 18;
-                arreglo = "10";
-                crearcombinacion();
-                break;
+        Random random = new Random();
+        System.out.println("Seleccione la dificultad:");
+        System.out.println("1. Fácil (6 caracteres, 22 intentos)");
+        System.out.println("2. Medio (8 caracteres, 20 intentos)");
+        System.out.println("3. Difícil (10 caracteres, 18 intentos)");
+        int dificultad = sc.nextInt();
+
+        int tamaño = 0, intentos = 0;
+        switch (dificultad) {
+            case 1: tamaño = 6; intentos = 22; break;
+            case 2: tamaño = 8; intentos = 20; break;
+            case 3: tamaño = 10; intentos = 18; break;
+            default: System.out.println("Dificultad no válida."); return;
         }
-        System.out.println("Ingrese un caracter: ");
-        char c = sc.next().charAt(0);
+
+        char[] combinacion = crearCombinacion(tamaño);
+        char[] progreso = new char[tamaño];
+        for (int i = 0; i < tamaño; i++) progreso[i] = '-';
+
+        while (intentos > 0) {
+            System.out.print("Intentos restantes: " + intentos + ". Estado actual: ");
+            System.out.println(progreso);
+            System.out.print("Ingrese un carácter: ");
+            char intento = sc.next().charAt(0);
+
+            char[] nuevoProgreso = actualizarProgreso(combinacion, progreso, intento);
+            if (String.valueOf(nuevoProgreso).equals(String.valueOf(combinacion))) {
+                System.out.println("¡Felicidades! Has descifrado la combinación.");
+                return;
+            }
+            progreso = nuevoProgreso;
+            intentos--;
+        }
+        System.out.println("La bomba ha explotado. La combinación era: " + String.valueOf(combinacion));
+    }
+
+    public static char[] crearCombinacion(int tamaño) {
+        Random random = new Random();
+        char[] combinacion = new char[tamaño];
+        for (int i = 0; i < tamaño; i++) {
+            combinacion[i] = (char) (random.nextInt(26) + 'a');
+        }
+        return combinacion;
+    }
+
+    public static char[] actualizarProgreso(char[] combinacion, char[] progreso, char intento) {
+        char[] nuevoProgreso = progreso.clone();
+        for (int i = 0; i < combinacion.length; i++) {
+            if (combinacion[i] == intento) {
+                nuevoProgreso[i] = intento;
+            }
+        }
+        return nuevoProgreso;
     }
     
-    public static void crearcombinacion () {
-        String z = "abcdefghijklmnopqrstuvwxyz";
-        String cadena = "";
-        int v = 6;
-        int j = 8;
-        int m = 10;
-        
-        if (v == 6) {
-        for (int x = 0; x < 6; x++) {
-                 int i = 6;
-                 char c = z.charAt(i);
-                    cadena += c;
-                   }
-        }
-        
-        if (j == 8) {
-            for (int x = 0; x < 8; x++) {
-                 int i = 8;
-                 char c = z.charAt(i);
-                    cadena += c;
-            }   
-        }
-        
-        if (m == 10) {
-            for (int x = 0; x < 10; x++) {
-                 int i = 10;
-                 char c = z.charAt(i);
-                    cadena += c;
-        }
-        // fin metodo
-     }
-    }
-    
-   public static void rotacionCircular() {
-        Scanner sc = new Scanner(System.in);
+    public static void rotacionCircular() {
+        Scanner scanner = new Scanner(System.in);
         Random random = new Random();
 
         System.out.print("Ingrese el tamano del arreglo (mayor a 5): ");
-        int x = sc.nextInt();
+        int a = scanner.nextInt();
+        if (a <= 5) {
+            System.out.println("Numero invalido");
+            return;
+        }
         
-        int[] arreglo = new int[x];
-        for (int i = 0; i < x; i++) {
+        int[] arreglo = new int[a];
+        for (int i = 0; i < a; i++) {
             arreglo[i] = random.nextInt(100) + 1;
         }
- 
-        System.out.print("Ingrese dirección y posiciones (i/d:posiciones en numeros): ");
-        String a = sc.next();
-        String[] b = a.split(":");
-        char direccion = b[0].charAt(0);
-        int posiciones = Integer.parseInt(b[1]);
-    
-        int[] arregloRotado = rotarArreglo(arreglo, direccion, posiciones);
+
+        System.out.print("Ingrese direccion y posiciones (i/d:posiciones) posiciones en numeros): ");
+        String resp = scanner.next();
+        String[] partes = resp.split(":");
+        char x = partes[0].charAt(0);
+        int k = Integer.parseInt(partes[1]);
+
+        int[] arregloRotado = rotarArreglo(arreglo, x, k);
+        System.out.println("Arreglo original: ");
+        printing(arreglo);
         System.out.println("Arreglo rotado: ");
-        System.out.println(mostrarArreglo(arregloRotado));
-}
-   public static int[] rotarArreglo(int[] arreglo, char direccion, int posiciones) {
+        printing(arregloRotado);
+    }
+    
+    public static int[] rotarArreglo(int[] arreglo, char direccion, int posiciones) {
+        int i, j, x;
         int tamaño = arreglo.length;
         int[] resultado = new int[tamaño];
-        for (int i = 0; i < tamaño; i++) {
-            int nuevaPosicion = (direccion == 'i') 
-                ? (i - posiciones + tamaño) % tamaño 
-                : (i + posiciones) % tamaño;
-            resultado[nuevaPosicion] = arreglo[i];
+        for (i = 0; i < arreglo.length - 1; i++) {
+            for (j = 0; j < arreglo.length - i - 1; j++) {                                                              
+                if (arreglo[j + 1] < arreglo[j]) {
+                    x = arreglo[j + 1];
+                    arreglo[j + 1] = arreglo[j];
+                    arreglo[j] = x;
+                }
+            }
         }
         return resultado;
     }
 
-    public static void mostrarArreglo(int[] arreglo) {
+    public static void printing(int[] arreglo) {
         for (int valor : arreglo) {
             System.out.print(valor + " ");
         }
         System.out.println();
+    }
+        // fin metodo
+    
+    public static void bono() {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Ingrese primer numero: ");
+        int num1 = sc.nextInt();
+        System.out.print("Ingrese segundo numero: ");
+        int num2 = sc.nextInt();
+
+        int[] bin1 = dec2bin(num1);
+        int[] bin2 = dec2bin(num2);
+        System.out.print("Binario de " + num1 + ": ");
+        printing(bin1);
+        System.out.print("Binario de " + num2 + ": ");
+        printing(bin2);
+
+        int[] sumaBinaria = sumaBinaria(bin1, bin2);
+        System.out.print("Suma binaria: ");
+        printing(sumaBinaria);
+    } 
+    
+    public static int[] dec2bin(int numero) {
+        int[] binario = new int[8];
+        for (int i = 7; i >= 0; i--) {
+            binario[i] = numero % 2;
+            numero /= 2;
+        }
+        return binario;
+    }
+
+    public static int[] sumaBinaria(int[] bin1, int[] bin2) {
+        int[] resultado = new int[8];
+        int x = 0;
+        for (int i = 7; i >= 0; i--) {
+            int suma = bin1[i] + bin2[i] + x;
+            resultado[i] = suma % 2;
+            x = suma / 2;
+        }
+        return resultado;
     }
 }  
     //fin clase
